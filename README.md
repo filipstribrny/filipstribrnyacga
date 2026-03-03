@@ -1,1 +1,33 @@
 # filipstribrnyacga
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Filip Stříbrný - O mně</title>
+    <style>
+        body { font-family: sans-serif; line-height: 1.6; max-width: 600px; margin: 40px auto; padding: 20px; background-color: #f4f4f4; }
+        .karta { background: white; padding: 30px; border-radius: 10px; box-shadow: 0 4px 6px rgba(0,0,0,0.1); }
+        h1 { color: #2c3e50; margin-top: 0; }
+        .info { color: #7f8c8d; font-weight: bold; }
+        ul { padding-left: 20px; }
+    </style>
+</head>
+<body>
+
+    <div class="karta">
+        <h1>Filip Stříbrný</h1>
+        <p class="info">Student | 19 let</p>
+        
+        <hr>
+
+        <p>Ahoj! Jsem studentem <strong>Gymnázia Amazon</strong>. Mezi mé hlavní zájmy a aktivity patří:</p>
+        
+        <ul>
+            <li><strong>Historie:</strong> Baví mě dějepis a objevování souvislostí z minulosti.</li>
+            <li><strong>Sport:</strong> Rekreačně hraju fotbal, což je pro mě ideální relax.</li>
+        </ul>
+    </div>
+
+</body>
+</html>
