@@ -6,100 +6,112 @@
     <title>Texas Hold'em - Listové vydání</title>
     <style>
         :root { --green: #1a472a; --table: #2d5a27; --gold: #f1c40f; }
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background-color: var(--green); color: white; text-align: center; margin: 0; padding: 20px; }
+        body { font-family: sans-serif; background-color: var(--green); color: white; text-align: center; padding: 20px; }
         
-        .stats { background: rgba(0,0,0,0.3); padding: 15px; border-radius: 10px; display: inline-block; margin-bottom: 20px; }
-        .stats span { color: var(--gold); font-weight: bold; font-size: 1.2em; }
+        .stats { background: rgba(0,0,0,0.4); padding: 15px; border-radius: 10px; display: inline-block; margin-bottom: 20px; border: 1px solid var(--gold); }
+        .stats b { color: var(--gold); font-size: 1.2em; }
 
-        .stul { background-color: var(--table); border: 12px solid #5d3a1a; border-radius: 100px; max-width: 800px; margin: 0 auto; padding: 40px; box-shadow: inset 0 0 50px rgba(0,0,0,0.5); }
+        .stul { background-color: var(--table); border: 10px solid #5d3a1a; border-radius: 50px; max-width: 700px; margin: 0 auto; padding: 30px; }
         
-        .sekce { margin: 20px 0; min-height: 110px; }
-        .label { font-size: 0.9em; text-transform: uppercase; letter-spacing: 1px; color: #bdc3c7; margin-bottom: 10px; }
+        .sekce { margin: 15px 0; min-height: 100px; }
+        .label { font-size: 0.8em; text-transform: uppercase; color: #ccc; margin-bottom: 5px; }
 
+        /* Styl karty */
         .karta { 
-            display: inline-block; width: 60px; height: 85px; background: white; 
-            border-radius: 5px; color: black; margin: 5px; line-height: 85px; 
-            font-weight: bold; font-size: 1.2em; box-shadow: 2px 2px 5px rgba(0,0,0,0.3);
-            vertical-align: middle;
+            display: inline-block; width: 50px; height: 75px; background: white; 
+            border-radius: 5px; color: black; margin: 5px; line-height: 75px; 
+            font-weight: bold; font-size: 1.1em; box-shadow: 2px 2px 5px rgba(0,0,0,0.5);
+            vertical-align: middle; border: 1px solid #999;
         }
-        .karta.back { background: #2c3e50; color: #2c3e50; border: 2px solid white; }
+        .karta.back { background: #2c3e50; color: white; border: 2px solid #ecf0f1; }
         .red { color: #e74c3c; }
 
-        .ovladani { margin-top: 30px; }
+        .ovladani { margin-top: 25px; }
         button { 
-            padding: 12px 24px; font-size: 14px; cursor: pointer; border: none; 
+            padding: 10px 18px; font-size: 14px; cursor: pointer; border: none; 
             border-radius: 5px; background: #e67e22; color: white; margin: 5px; 
-            font-weight: bold; transition: 0.2s;
+            font-weight: bold;
         }
-        button:hover:not(:disabled) { background: #d35400; transform: translateY(-2px); }
-        button:disabled { background: #7f8c8d; cursor: not-allowed; }
+        button:hover:not(:disabled) { background: #d35400; }
+        button:disabled { background: #555; cursor: not-allowed; }
         
-        #zprava { font-style: italic; margin-top: 15px; height: 20px; color: var(--gold); }
+        .btn-les { background: #27ae60; }
+        .btn-les:hover { background: #1e8449; }
+
+        #zprava { height: 25px; margin: 15px 0; color: var(--gold); font-weight: bold; }
         .zpet { display: block; margin-top: 30px; color: #bdc3c7; text-decoration: none; }
     </style>
 </head>
 <body>
 
-    <h1>🍂 Listový Texas Hold'em</h1>
+    <h1>🍂 Listový Poker</h1>
     
     <div class="stats">
-        Moje listy: <span id="moje-listy">500</span> | Bank na stole: <span id="bank">0</span>
+        Moje listy: <b id="moje-listy">500</b> | V banku: <b id="bank">0</b>
     </div>
 
     <div class="stul">
         <div class="sekce">
-            <div class="label">Dealerovy karty</div>
+            <div class="label">Dealer</div>
             <div id="dealer-cards"></div>
         </div>
 
         <div class="sekce">
-            <div class="label">Společné karty (Board)</div>
+            <div class="label">Stůl</div>
             <div id="community-cards"></div>
         </div>
 
         <div class="sekce">
-            <div class="label">Moje karty</div>
+            <div class="label">Tvoje karty</div>
             <div id="player-cards"></div>
         </div>
     </div>
 
-    <div id="zprava">Klikni na 'Rozdat' a začni hru!</div>
+    <div id="zprava">Připraven ke hře? Rozdej si!</div>
 
     <div class="ovladani">
         <button id="btn-deal" onclick="startHry()">Rozdat (Sázka 10)</button>
         <button id="btn-increase" onclick="increase()" disabled>Přihodit 20</button>
-        <button id="btn-fold" onclick="fold()" disabled>Fold (Zahodit)</button>
+        <button id="btn-fold" onclick="fold()" disabled>Fold</button>
+        <br><br>
+        <button class="btn-les" onclick="sebratListy()">Jít do lesa pro listy (+100)</button>
     </div>
 
-    <a href="index.html" class="zpet">← Zpět na profil Filipa</a>
+    <a href="index.html" class="zpet">← Zpět na profil</a>
 
     <script>
+        let playerListy = 500;
+        let bank = 0;
+        let gameStage = 0; 
         let deck = [];
         let playerHand = [];
         let dealerHand = [];
-        let communityCards = [];
-        let playerListy = 500;
-        let bank = 0;
-        let gameStage = 0; // 0: Start, 1: Flop, 2: Turn, 3: River, 4: Showdown
-
-        const suits = ['♠', '♣', '♥', '♦'];
-        const values = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
 
         function createDeck() {
+            const suits = ['S', 'C', 'H', 'D']; // Spades, Clubs, Hearts, Diamonds
+            const values = ['2', '3', '4', '5', '6', '7', '8', '9', '10', 'J', 'Q', 'K', 'A'];
             deck = [];
             for (let s of suits) {
                 for (let v of values) {
-                    deck.push({ v, s, color: (s === '♥' || s === '♦') ? 'red' : 'black' });
+                    deck.push({ v, s, color: (s === 'H' || s === 'D') ? 'red' : 'black' });
                 }
             }
             deck.sort(() => Math.random() - 0.5);
         }
 
+        function getSuitSymbol(s) {
+            if(s === 'S') return '♠';
+            if(s === 'C') return '♣';
+            if(s === 'H') return '♥';
+            if(s === 'D') return '♦';
+            return s;
+        }
+
         function renderCard(card, targetId, hidden = false) {
             const container = document.getElementById(targetId);
             const div = document.createElement('div');
-            div.className = `karta ${hidden ? 'back' : ''} ${card.color}`;
-            div.innerHTML = hidden ? '?' : `${card.v}${card.s}`;
+            div.className = `karta ${hidden ? 'back' : ''} ${hidden ? '' : card.color}`;
+            div.innerHTML = hidden ? '?' : card.v + getSuitSymbol(card.s);
             container.appendChild(div);
         }
 
@@ -108,17 +120,22 @@
             document.getElementById('bank').innerText = bank;
         }
 
+        function sebratListy() {
+            playerListy += 100;
+            updateUI();
+            document.getElementById('zprava').innerText = "Našel jsi 100 nových listů!";
+        }
+
         function startHry() {
             if (playerListy < 10) return alert("Nemáš dost listí!");
             
-            // Reset
             gameStage = 0;
-            bank = 20; // 10 od hráče, 10 od dealera
+            bank = 20;
             playerListy -= 10;
+            
             document.getElementById('dealer-cards').innerHTML = '';
             document.getElementById('community-cards').innerHTML = '';
             document.getElementById('player-cards').innerHTML = '';
-            document.getElementById('zprava').innerText = "Hra začíná. Přihodíš na Flop?";
             
             createDeck();
             playerHand = [deck.pop(), deck.pop()];
@@ -132,10 +149,45 @@
             document.getElementById('btn-deal').disabled = true;
             document.getElementById('btn-increase').disabled = false;
             document.getElementById('btn-fold').disabled = false;
+            document.getElementById('btn-increase').innerText = "Flop (Přihodit 20)";
+            document.getElementById('zprava').innerText = "Hra začala. Co uděláš?";
             updateUI();
         }
 
         function increase() {
-            if (playerListy < 20) return alert("Málo listí na zvýšení!");
+            if (playerListy < 20) return alert("Málo listí!");
             
-            playerList
+            playerListy -= 20;
+            bank += 40;
+            gameStage++;
+
+            if (gameStage === 1) { // FLOP
+                renderCard(deck.pop(), 'community-cards');
+                renderCard(deck.pop(), 'community-cards');
+                renderCard(deck.pop(), 'community-cards');
+                document.getElementById('btn-increase').innerText = "Turn (Přihodit 20)";
+            } else if (gameStage === 2) { // TURN
+                renderCard(deck.pop(), 'community-cards');
+                document.getElementById('btn-increase').innerText = "River (Přihodit 20)";
+            } else if (gameStage === 3) { // RIVER
+                renderCard(deck.pop(), 'community-cards');
+                document.getElementById('btn-increase').innerText = "Ukázat karty!";
+            } else if (gameStage === 4) {
+                showdown();
+            }
+            updateUI();
+        }
+
+        function fold() {
+            document.getElementById('zprava').innerText = "Zahodil jsi to. Dealer bere bank.";
+            resetButtons();
+        }
+
+        function showdown() {
+            document.getElementById('dealer-cards').innerHTML = '';
+            renderCard(dealerHand[0], 'dealer-cards');
+            renderCard(dealerHand[1], 'dealer-cards');
+
+            const win = Math.random() > 0.5; 
+            if (win) {
+                playerListy += bank;
