@@ -5,39 +5,46 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Texas Hold'em - Listová edice</title>
     <style>
-        body { font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif; background: #1a472a; color: white; text-align: center; margin: 0; padding: 20px; }
-        .kontejner { max-width: 600px; margin: 0 auto; }
-        .stul { background: #2d5a27; border: 8px solid #5d3a1a; padding: 25px; margin: 20px auto; border-radius: 50px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); }
+        body { font-family: 'Segoe UI', sans-serif; background: #1a472a; color: white; text-align: center; margin: 0; padding: 20px; }
+        .kontejner { max-width: 600px; margin: 0 auto; position: relative; }
+        
+        /* Tlačítko zpět v horním rohu */
+        .nav-zpet { position: absolute; top: 0; left: 0; background: rgba(0,0,0,0.3); color: white; text-decoration: none; padding: 5px 15px; border-radius: 5px; font-size: 0.8em; border: 1px solid #555; }
+        .nav-zpet:hover { background: #34495e; }
+
+        .stul { background: #2d5a27; border: 8px solid #5d3a1a; padding: 25px; margin: 20px auto; border-radius: 50px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); border-style: double; }
         
         .karta { 
             display: inline-block; width: 50px; height: 70px; background: white; 
             color: black; margin: 5px; border-radius: 6px; line-height: 70px; 
             font-weight: bold; font-size: 1.2em; box-shadow: 2px 2px 5px rgba(0,0,0,0.3);
-            vertical-align: middle;
+            vertical-align: middle; border: 1px solid #ccc;
         }
         .karta-rub { background: #2c3e50; color: #2c3e50; border: 2px solid #ecf0f1; }
         .red { color: #e74c3c; }
 
-        .stats { background: rgba(0,0,0,0.3); padding: 15px; border-radius: 15px; margin-bottom: 20px; border: 1px solid #f1c40f; }
+        .stats { background: rgba(0,0,0,0.3); padding: 15px; border-radius: 15px; margin-top: 40px; margin-bottom: 20px; border: 1px solid #f1c40f; }
         b { color: #f1c40f; font-size: 1.3em; }
 
         button { 
             padding: 12px 20px; margin: 5px; cursor: pointer; font-weight: bold; 
             border: none; border-radius: 8px; transition: 0.2s;
         }
-        .btn-hlavni { background: #e67e22; color: white; }
-        .btn-hlavni:hover:not(:disabled) { background: #d35400; transform: scale(1.05); }
-        .btn-hlavni:disabled { background: #555; cursor: not-allowed; }
+        .btn-hlavni { background: #e67e22; color: white; box-shadow: 0 4px #a05819; }
+        .btn-hlavni:active { transform: translateY(2px); box-shadow: 0 2px #a05819; }
+        .btn-hlavni:disabled { background: #555; cursor: not-allowed; box-shadow: none; transform: none; }
         
-        .btn-les { background: #27ae60; color: white; }
-        .btn-zpet { background: #34495e; color: white; margin-top: 20px; }
+        .btn-les { background: #27ae60; color: white; margin-top: 20px; }
+        .btn-final-zpet { background: #34495e; color: white; width: 100%; margin-top: 20px; }
         
-        #log { margin: 15px 0; font-style: italic; color: #f1c40f; min-height: 24px; }
+        #log { margin: 15px 0; font-style: italic; color: #f1c40f; min-height: 24px; font-weight: bold; }
     </style>
 </head>
 <body>
 
     <div class="kontejner">
+        <a href="index.html" class="nav-zpet">← Odejít od stolu</a>
+
         <h1>🍂 Listový Poker</h1>
         
         <div class="stats">
@@ -45,27 +52,27 @@
         </div>
 
         <div class="stul">
-            <p style="font-size: 0.8em; opacity: 0.8;">DEALER</p>
+            <p style="font-size: 0.7em; letter-spacing: 2px; opacity: 0.8; margin: 0;">DEALER</p>
             <div id="dealer-area"></div>
             
-            <p style="font-size: 0.8em; opacity: 0.8; margin-top: 20px;">SPOLEČNÉ KARTY</p>
+            <p style="font-size: 0.7em; letter-spacing: 2px; opacity: 0.8; margin-top: 15px;">STŮL</p>
             <div id="community-area"></div>
             
-            <p style="font-size: 0.8em; opacity: 0.8; margin-top: 20px;">MOJE RUKA</p>
+            <p style="font-size: 0.7em; letter-spacing: 2px; opacity: 0.8; margin-top: 15px;">MOJE RUKA</p>
             <div id="player-area"></div>
         </div>
 
-        <div id="log">Klikni na "Rozdat" a zkus porazit dealera!</div>
+        <div id="log">Zatím se nehraje. Rozdej karty!</div>
 
         <div class="ovladani">
-            <button id="btn-deal" class="btn-hlavni" onclick="start()">Rozdat (10 listů)</button>
-            <button id="btn-next" class="btn-hlavni" onclick="dalsi()" disabled>Další fáze (20 listů)</button>
-            <button id="btn-fold" class="btn-hlavni" onclick="konec('Zahodil jsi to. Dealer se směje.')" disabled>Fold</button>
+            <button id="btn-deal" class="btn-hlavni" onclick="start()">Rozdat (10)</button>
+            <button id="btn-next" class="btn-hlavni" onclick="dalsi()" disabled>Další fáze (20)</button>
+            <button id="btn-fold" class="btn-hlavni" onclick="konec('Zahodil jsi karty. Dealer shrábnul listy.')" disabled>Fold</button>
             
-            <br><br>
-            <button class="btn-les" onclick="sbirat()">Jít do lesa pro listy (+100)</button>
             <br>
-            <button class="btn-zpet" onclick="window.location.href='index.html'">← Zpět na profil</button>
+            <button class="btn-les" onclick="sbirat()">Sběr listí v lese (+100 🍂)</button>
+            <br>
+            <button class="btn-final-zpet" onclick="window.location.href='index.html'">Zpět na profil Filipa</button>
         </div>
     </div>
 
@@ -73,7 +80,7 @@
         let listy = 500;
         let bank = 0;
         let faze = 0; 
-        let playerStrength = 0;
+        let silaHrace = 0;
 
         function dejKartu() {
             const hodnoty = ['2','3','4','5','6','7','8','9','10','J','Q','K','A'];
@@ -81,8 +88,8 @@
             const rH = Math.floor(Math.random() * hodnoty.length);
             const rB = Math.floor(Math.random() * barvy.length);
             
-            // Pro logiku vítězství si uložíme sílu karty
-            playerStrength += rH; 
+            // Sčítáme sílu karet (2=0, ..., A=12)
+            silaHrace += rH; 
 
             return `<div class="karta ${barvy[rB].c === 'red' ? 'red' : ''}">${hodnoty[rH]}${barvy[rB].s}</div>`;
         }
@@ -94,16 +101,16 @@
 
         function sbirat() {
             listy += 100;
-            document.getElementById('log').innerText = "Našel jsi v listí schovanou stovku!";
+            document.getElementById('log').innerText = "Prošel ses lesem a nahrabal 100 listů.";
             aktualizuj();
         }
 
         function start() {
-            if (listy < 10) return alert("Nemáš dost listí! Utíkej do lesa.");
+            if (listy < 10) return alert("Nemáš listy! Jdi do lesa.");
             listy -= 10;
             bank = 20;
             faze = 1;
-            playerStrength = 0;
+            silaHrace = 0;
             
             document.getElementById('player-area').innerHTML = dejKartu() + dejKartu();
             document.getElementById('dealer-area').innerHTML = '<div class="karta karta-rub">?</div><div class="karta karta-rub">?</div>';
@@ -112,12 +119,12 @@
             document.getElementById('btn-deal').disabled = true;
             document.getElementById('btn-next').disabled = false;
             document.getElementById('btn-fold').disabled = false;
-            document.getElementById('log').innerText = "Máš karty. Co uděláš?";
+            document.getElementById('log').innerText = "Karty jsou na stole. Vsadíš na Flop?";
             aktualizuj();
         }
 
         function dalsi() {
-            if (listy < 20) return alert("Potřebuješ 20 listů na další sázku!");
+            if (listy < 20) return alert("Sázka je 20 listů!");
             listy -= 20;
             bank += 40;
             
@@ -125,16 +132,16 @@
             
             if (faze === 1) { // Flop
                 area.innerHTML = dejKartu() + dejKartu() + dejKartu();
-                document.getElementById('log').innerText = "Vyložen Flop. Dealer vypadá sebejistě.";
+                document.getElementById('log').innerText = "Flop je tu. Co na to dealer?";
                 faze = 2;
             } else if (faze === 2) { // Turn
                 area.innerHTML += dejKartu();
-                document.getElementById('log').innerText = "Turn na stole. Bank roste!";
+                document.getElementById('log').innerText = "Turn vyložen. Bank začíná být zajímavý.";
                 faze = 3;
             } else if (faze === 3) { // River
                 area.innerHTML += dejKartu();
-                document.getElementById('log').innerText = "River! Je čas ukázat karty.";
-                document.getElementById('btn-next').innerText = "Ukázat karty (Showdown)";
+                document.getElementById('log').innerText = "River! Poslední šance vsadit.";
+                document.getElementById('btn-next').innerText = "Ukázat karty";
                 faze = 4;
             } else if (faze === 4) {
                 vyhodnotit();
@@ -143,18 +150,17 @@
         }
 
         function vyhodnotit() {
-            // Dealerovy karty se vygenerují až teď
+            // Dealerovy karty
             document.getElementById('dealer-area').innerHTML = dejKartu() + dejKartu();
             
-            // Dealer má teď "štěstí" nastavené tak, že vyhraje častěji, 
-            // pokud tvoje celková síla karet není dost vysoká.
-            const stestiDealera = Math.random() * 50; 
+            // Dealer má "základní sílu" + náhodu, aby byl těžší soupeř
+            const silaDealera = 30 + (Math.random() * 40); 
             
-            if (playerStrength > stestiDealera) {
+            if (silaHrace > silaDealera) {
                 listy += bank;
-                konec("VYHRÁL JSI! Tvoje kombinace byla silnější.");
+                konec("VYHRÁL JSI! Dealer měl dneska smůlu.");
             } else {
-                konec("Dealer vyhrál na celé čáře. Listy jsou jeho.");
+                konec("Dealer vyhrál. Má prostě lepší ruku (nebo podvádí).");
             }
         }
 
@@ -165,7 +171,7 @@
             document.getElementById('btn-deal').disabled = false;
             document.getElementById('btn-next').disabled = true;
             document.getElementById('btn-fold').disabled = true;
-            document.getElementById('btn-next').innerText = "Další fáze (20 listů)";
+            document.getElementById('btn-next').innerText = "Další fáze (20)";
             aktualizuj();
         }
     </script>
