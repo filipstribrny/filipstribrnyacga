@@ -1,0 +1,67 @@
+<!DOCTYPE html>
+<html lang="cs">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Texas Hold'em - Listové vydání</title>
+    <style>
+        body { font-family: sans-serif; background-color: #1a472a; color: white; text-align: center; padding: 50px; }
+        .stul { background-color: #2d5a27; border: 10px solid #5d3a1a; border-radius: 150px; padding: 50px; min-height: 300px; position: relative; }
+        .bank-info { font-size: 24px; margin-bottom: 20px; color: #f1c40f; }
+        .karty-area { display: flex; justify-content: center; gap: 10px; margin-top: 20px; }
+        .karta-vizual { width: 60px; height: 90px; background: white; border-radius: 5px; color: black; display: flex; align-items: center; justify-content: center; font-weight: bold; }
+        .ovladani { margin-top: 40px; }
+        button { padding: 10px 20px; font-size: 16px; cursor: pointer; border: none; border-radius: 5px; background: #e67e22; color: white; margin: 5px; }
+        button:hover { background: #d35400; }
+        .zpet { display: block; margin-top: 30px; color: #bdc3c7; text-decoration: none; }
+    </style>
+</head>
+<body>
+
+    <h1>Texas Hold'em: Listová edice 🍂</h1>
+    
+    <div class="bank-info">
+        Tvůj měšec: <span id="listy">100</span> listů
+    </div>
+
+    <div class="stul">
+        <p>Společné karty na stole:</p>
+        <div class="karty-area">
+            <div class="karta-vizual">🂠</div>
+            <div class="karta-vizual">🂠</div>
+            <div class="karta-vizual">🂠</div>
+            <div class="karta-vizual">🂠</div>
+            <div class="karta-vizual">🂠</div>
+        </div>
+        
+        <div class="ovladani">
+            <button onclick="vsadit(10)">Vsadit 10 listů</button>
+            <button onclick="vsadit(50)">Vsadit 50 listů</button>
+            <button onclick="reset()">Najít nové listy v lese</button>
+        </div>
+    </div>
+
+    <a href="index.html" class="zpet">← Zpět na profil</a>
+
+    <script>
+        let pocetListu = 100;
+        const display = document.getElementById('listy');
+
+        function vsadit(castka) {
+            if (pocetListu >= castka) {
+                pocetListu -= castka;
+                display.innerText = pocetListu;
+                alert('Vsadil jsi ' + castka + ' listů. Hodně štěstí!');
+            } else {
+                alert('Nemáš dost listů! Jdi se projít do lesa.');
+            }
+        }
+
+        function reset() {
+            pocetListu = 100;
+            display.innerText = pocetListu;
+            alert('Nahrabal jsi plnou náruč nového listí.');
+        }
+    </script>
+</body>
+</html>
