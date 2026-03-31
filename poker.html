@@ -2,140 +2,21 @@
 <html lang="cs">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Texas Hold'em - Listová edice</title>
+    <title>Čtvrtletní práce - Island</title>
     <style>
-        body { font-family: 'Segoe UI', sans-serif; background: #1a472a; color: white; text-align: center; margin: 0; padding: 20px; }
-        .kontejner { max-width: 600px; margin: 0 auto; position: relative; }
-        .nav-zpet { position: absolute; top: 0; left: 0; background: rgba(0,0,0,0.3); color: white; text-decoration: none; padding: 5px 15px; border-radius: 5px; font-size: 0.8em; border: 1px solid #555; }
-        .nav-zpet:hover { background: #34495e; }
-        .stul { background: #2d5a27; border: 8px solid #5d3a1a; padding: 25px; margin: 20px auto; border-radius: 50px; box-shadow: 0 10px 30px rgba(0,0,0,0.5); border-style: double; }
-        .karta { display: inline-block; width: 50px; height: 70px; background: white; color: black; margin: 5px; border-radius: 6px; line-height: 70px; font-weight: bold; font-size: 1.2em; box-shadow: 2px 2px 5px rgba(0,0,0,0.3); vertical-align: middle; border: 1px solid #ccc; }
-        .karta-rub { background: #2c3e50; color: #2c3e50; border: 2px solid #ecf0f1; }
-        .red { color: #e74c3c; }
-        .stats { background: rgba(0,0,0,0.3); padding: 15px; border-radius: 15px; margin-top: 40px; margin-bottom: 20px; border: 1px solid #f1c40f; }
-        b { color: #f1c40f; font-size: 1.3em; }
-        button { padding: 12px 20px; margin: 5px; cursor: pointer; font-weight: bold; border: none; border-radius: 8px; transition: 0.2s; }
-        .btn-hlavni { background: #e67e22; color: white; box-shadow: 0 4px #a05819; }
-        .btn-hlavni:active { transform: translateY(2px); box-shadow: 0 2px #a05819; }
-        .btn-hlavni:disabled { background: #555; cursor: not-allowed; box-shadow: none; transform: none; }
-        .btn-les { background: #27ae60; color: white; margin-top: 20px; }
-        .btn-final-zpet { background: #34495e; color: white; width: 100%; margin-top: 20px; }
-        .btn-cpp { background: #f1c40f; color: #1a472a; display: block; margin: 10px auto; text-decoration: none; padding: 10px; border-radius: 8px; font-weight: bold; width: fit-content; }
-        #log { margin: 15px 0; font-style: italic; color: #f1c40f; min-height: 24px; font-weight: bold; }
+        body { font-family: sans-serif; background: #1a472a; color: white; text-align: center; padding: 20px; }
+        .odkaz { color: #f1c40f; font-weight: bold; text-decoration: none; font-size: 1.2em; display: block; margin-bottom: 20px; }
+        iframe { border: 5px solid #f1c40f; border-radius: 10px; }
     </style>
 </head>
 <body>
+    <h1>Moje oblíbené místo: Island</h1>
+    
+    <a href="https://www.visiticeland.com/" target="_blank" class="odkaz">👉 Oficiální web Islandu</a>
 
-    <div class="kontejner">
-        <a href="cpp.html" class="btn-cpp">📄 Zobrazit čtvrtletní práci (Island)</a>
+    <iframe src="ISLANd.pdf" width="100%" height="600px"></iframe>
 
-        <h1>🍂 Listový Poker</h1>
-        
-        <div class="stats">
-            Moje listy: <b id="moje-listy">500</b> | V banku: <b id="bank">0</b>
-        </div>
-
-        <div class="stul">
-            <p style="font-size: 0.7em; letter-spacing: 2px; opacity: 0.8; margin: 0;">DEALER</p>
-            <div id="dealer-area"></div>
-            <p style="font-size: 0.7em; letter-spacing: 2px; opacity: 0.8; margin-top: 15px;">STŮL</p>
-            <div id="community-area"></div>
-            <p style="font-size: 0.7em; letter-spacing: 2px; opacity: 0.8; margin-top: 15px;">MOJE RUKA</p>
-            <div id="player-area"></div>
-        </div>
-
-        <div id="log">Zatím se nehraje. Rozdej karty!</div>
-
-        <div class="ovladani">
-            <button id="btn-deal" class="btn-hlavni" onclick="start()">Rozdat (10)</button>
-            <button id="btn-next" class="btn-hlavni" onclick="dalsi()" disabled>Další fáze (20)</button>
-            <button id="btn-fold" class="btn-hlavni" onclick="konec('Zahodil jsi karty. Dealer shrábnul listy.')" disabled>Fold</button>
-            <br>
-            <button class="btn-les" onclick="sbirat()">Sběr listí v lese (+100 🍂)</button>
-        </div>
-    </div>
-
-    <script>
-        let listy = 500;
-        let bank = 0;
-        let faze = 0; 
-        let silaHrace = 0;
-
-        function dejKartu() {
-            const hodnoty = ['2','3','4','5','6','7','8','9','10','J','Q','K','A'];
-            const barvy = [ {s:'♠', c:'black'}, {s:'♣', c:'black'}, {s:'♥', c:'red'}, {s:'♦', c:'red'} ];
-            const rH = Math.floor(Math.random() * hodnoty.length);
-            const rB = Math.floor(Math.random() * barvy.length);
-            silaHrace += rH; 
-            return `<div class="karta ${barvy[rB].c === 'red' ? 'red' : ''}">${hodnoty[rH]}${barvy[rB].s}</div>`;
-        }
-
-        function aktualizuj() {
-            document.getElementById('moje-listy').innerText = listy;
-            document.getElementById('bank').innerText = bank;
-        }
-
-        function sbirat() {
-            listy += 100;
-            document.getElementById('log').innerText = "Prošel ses lesem a nahrabal 100 listů.";
-            aktualizuj();
-        }
-
-        function start() {
-            if (listy < 10) return alert("Nemáš listy! Jdi do lesa.");
-            listy -= 10; bank = 20; faze = 1; silaHrace = 0;
-            document.getElementById('player-area').innerHTML = dejKartu() + dejKartu();
-            document.getElementById('dealer-area').innerHTML = '<div class="karta karta-rub">?</div><div class="karta karta-rub">?</div>';
-            document.getElementById('community-area').innerHTML = '';
-            document.getElementById('btn-deal').disabled = true;
-            document.getElementById('btn-next').disabled = false;
-            document.getElementById('btn-fold').disabled = false;
-            document.getElementById('log').innerText = "Karty jsou na stole. Vsadíš na Flop?";
-            aktualizuj();
-        }
-
-        function dalsi() {
-            if (listy < 20) return alert("Sázka je 20 listů!");
-            listy -= 20; bank += 40;
-            const area = document.getElementById('community-area');
-            if (faze === 1) { 
-                area.innerHTML = dejKartu() + dejKartu() + dejKartu();
-                document.getElementById('log').innerText = "Flop je tu. Co na to dealer?";
-                faze = 2;
-            } else if (faze === 2) { 
-                area.innerHTML += dejKartu();
-                faze = 3;
-            } else if (faze === 3) { 
-                area.innerHTML += dejKartu();
-                document.getElementById('btn-next').innerText = "Ukázat karty";
-                faze = 4;
-            } else if (faze === 4) {
-                vyhodnotit();
-            }
-            aktualizuj();
-        }
-
-        function vyhodnotit() {
-            document.getElementById('dealer-area').innerHTML = dejKartu() + dejKartu();
-            const silaDealera = 30 + (Math.random() * 40); 
-            if (silaHrace > silaDealera) {
-                listy += bank;
-                konec("VYHRÁL JSI! Dealer měl dneska smůlu.");
-            } else {
-                konec("Dealer vyhrál. Má prostě lepší ruku.");
-            }
-        }
-
-        function konec(text) {
-            document.getElementById('log').innerText = text;
-            bank = 0; faze = 0;
-            document.getElementById('btn-deal').disabled = false;
-            document.getElementById('btn-next').disabled = true;
-            document.getElementById('btn-fold').disabled = true;
-            document.getElementById('btn-next').innerText = "Další fáze (20)";
-            aktualizuj();
-        }
-    </script>
+    <br><br>
+    <a href="index.html" style="color: white;">← Zpět na hlavní stránku s hrou</a>
 </body>
 </html>
